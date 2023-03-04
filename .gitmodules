@@ -1,0 +1,3 @@
+[submodule "deps/simplelightbox"]
+	path = deps/simplelightbox
+	url = https://github.com/andreknieriem/simplelightbox
