@@ -1,0 +1,10 @@
+[module]
+[[module.imports]]
+  ignoreConfig = true
+  path = "https://github.com/andreknieriem/simplelightbox"
+[[module.imports.mounts]]
+  source="dist/simple-lightbox.min.js"
+  target="static/js/simple-lightbox.min.js"
+[[module.imports.mounts]]
+  source="dist/simple-lightbox.min.css"
+  target="static/css/simple-lightbox.min.css"

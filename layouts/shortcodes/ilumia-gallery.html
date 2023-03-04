@@ -1,0 +1,15 @@
+{{- if not ($.Page.Scratch.Get "ilumia-gallery-count") }}
+<link rel="stylesheet" href={{ "css/ilumia-gallery.css" | relURL }} />
+{{ end }}
+{{- if not ($.Page.Scratch.Get "simple-lightbox-count") }}
+<link rel="stylesheet" href={{ "css/simple-lightbox.min.css" | relURL }} />
+<script src={{ "js/simple-lightbox.min.js" | relURL }}></script>
+{{ end }}
+{{- $.Page.Scratch.Add "ilumia-gallery-count" 1 -}}
+{{- $.Page.Scratch.Add "simple-lightbox-count" 1 -}}
+<ul class="ilumia-gallery" id="ilumia-gallery-{{ $.Page.Scratch.Get "simple-lightbox-count" }}">
+ {{ .Inner }}
+</ul>
+<script>
+ new SimpleLightbox('#ilumia-gallery-{{ $.Page.Scratch.Get "simple-lightbox-count" }} li > a', { /* options */ });
+</script>
