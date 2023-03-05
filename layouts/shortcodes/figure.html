@@ -12,7 +12,6 @@
 {{ $thumbResize := print "x" $imageHeight }}
 {{ $fullPath := .Get "src" | default (printf "%s." (.Get "thumb") | replace (.Get "link") ".") }}
 {{ $full := .Page.Resources.GetMatch $fullPath }}
-{{ warnf "Full image path %q" $fullPath }}
 {{ if and ($.Parent ) (eq $.Parent.Name "ilumia-gallery") }}<li>{{ end }}
  {{ $thumb := $full.Resize $thumbResize }}
  <a href="{{ $full.RelPermalink }}" itemprop="contentUrl" id="ilumia-figure-{{ $.Page.Scratch.Get "ilumia-gallery-count" }}" class="{{- if .Get "pull" }}ilumia-pull-{{ .Get "pull" }} {{- end}}">
