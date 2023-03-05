@@ -1,35 +1,38 @@
-{{- if not ($.Page.Scratch.Get "ilumia-gallery-count") }}<link rel="stylesheet" href={{ "css/ilumia-gallery.css" | relURL }} />{{ end }}
-{{- if not ($.Page.Scratch.Get "simple-lightbox-count") }}
+{{ if not ($.Page.Scratch.Get "ilumia-gallery-count") }}<link rel="stylesheet" href={{ "css/ilumia-gallery.css" | relURL }} />{{ end }}
+{{ if not ($.Page.Scratch.Get "simple-lightbox-count") }}
 <link rel="stylesheet" href={{ "css/simple-lightbox.min.css" | relURL }} />
 <script src={{ "js/simple-lightbox.min.js" | relURL }}></script>
 {{ end }}
-{{- $.Page.Scratch.Add "ilumia-gallery-count" 1 -}}
-{{- $.Page.Scratch.Add "simple-lightbox-count" 1 -}}
-{{- $full := .Get "src" | default (printf "%s." (.Get "thumb") | replace (.Get "link") ".") }}
-{{- $thumb := .Get "thumb" | default (printf "%s." (.Get "src") | replace (.Get "link") ".") }}
-{{- $imageHeight := .Get "height" | default ( "500px" ) }}
-{{- if ($.Parent) }}
- {{- $imageHeight = $.Parent.Get "image-height" }}
-{{- end }}
-{{- if and ($.Parent ) (eq $.Parent.Name "ilumia-gallery") }}<li>{{- end }}
-<a href="{{ $full | relURL }}" itemprop="contentUrl" id="ilumia-figure-{{ $.Page.Scratch.Get "ilumia-gallery-count" }}" class="{{- if .Get "pull" }}ilumia-pull-{{ .Get "pull" }} {{- end}}">
-<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject" class="{{- if .Get "align" }}ilumia-align-{{ .Get "align" }} {{- end}}">
-  <img itemprop="thumbnail" src="{{ $thumb | relURL }}" {{ with .Get "alt" | default ( "" ) }}alt="{{.}}"{{ end }} {{ with .Get "caption" | default ( "" ) }}title="{{.}}"{{ end }} style="max-height: {{ $imageHeight }};"/>
-    {{- if or (or (.Get "title") (.Get "caption")) (.Get "attr")}}
-      <figcaption>
-      {{- with .Get "title" }}<h4>{{.}}</h4>{{ end }}
-      {{- if or (.Get "caption") (.Get "attr")}}
-        <p>
-          {{- .Get "caption" -}}
-          {{- with .Get "attrlink"}}<a href="{{.}}">{{ .Get "attr" }}</a>{{ else }}{{ .Get "attr"}}{{ end -}}
-        </p>
-      {{- end }}
-      </figcaption>
-    {{- end }}
-</figure>
-</a>
-{{- if and ($.Parent ) (eq $.Parent.Name "ilumia-gallery") }}</li>{{ else }}
-<script>
- new SimpleLightbox('#ilumia-figure-{{ $.Page.Scratch.Get "ilumia-gallery-count" }}', { /* options */ });
-</script>
-{{- end }}
+{{ $.Page.Scratch.Add "ilumia-gallery-count" 1 }}
+{{ $.Page.Scratch.Add "simple-lightbox-count" 1 }}
+{{ $imageHeight := .Get "height" | default ( "500" ) }}
+{{ if ($.Parent) }}
+ {{ $imageHeight = $.Parent.Get "image-height" }}
+{{ end }}
+{{ $thumbResize := print "x" $imageHeight }}
+{{ $fullPath := .Get "src" | default (printf "%s." (.Get "thumb") | replace (.Get "link") ".") }}
+{{ $full := .Page.Resources.GetMatch $fullPath }}
+{{ warnf "Full image path %q" $fullPath }}
+{{ if and ($.Parent ) (eq $.Parent.Name "ilumia-gallery") }}<li>{{ end }}
+ {{ $thumb := $full.Resize $thumbResize }}
+ <a href="{{ $full.RelPermalink }}" itemprop="contentUrl" id="ilumia-figure-{{ $.Page.Scratch.Get "ilumia-gallery-count" }}" class="{{- if .Get "pull" }}ilumia-pull-{{ .Get "pull" }} {{- end}}">
+ <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject" class="{{- if .Get "align" }}ilumia-align-{{ .Get "align" }} {{- end}}">
+ <img itemprop="thumbnail" src="{{ $thumb.RelPermalink }}" width="{{ $thumb.Width }}" height="{{ $thumb.Height }}" {{ with .Get "alt" | default ( "" ) }}alt="{{.}}"{{ end }} {{ with .Get "caption" | default ( "" ) }}title="{{.}}"{{ end }} style="max-height: {{ $imageHeight }}px;"/>
+   {{- if or (or (.Get "title") (.Get "caption")) (.Get "attr")}}
+     <figcaption>
+     {{- with .Get "title" }}<h4>{{.}}</h4>{{ end }}
+     {{- if or (.Get "caption") (.Get "attr")}}
+       <p>
+         {{- .Get "caption" -}}
+         {{- with .Get "attrlink"}}<a href="{{.}}">{{ .Get "attr" }}</a>{{ else }}{{ .Get "attr"}}{{ end -}}
+       </p>
+     {{- end }}
+     </figcaption>
+   {{- end }}
+ </figure>
+ </a>
+ {{- if and ($.Parent ) (eq $.Parent.Name "ilumia-gallery") }}</li>{{ else }}
+ <script>
+  new SimpleLightbox('#ilumia-figure-{{ $.Page.Scratch.Get "ilumia-gallery-count" }}', { /* options */ });
+ </script>
+{{ end }}
